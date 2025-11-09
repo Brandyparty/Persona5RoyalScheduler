@@ -1,0 +1,20 @@
+{
+    "IndexPreviousDay": 0,
+    "startingStock": 6,
+    "days": [
+        {"month": 4, "day": 18, "dungeonStart": true},
+        {"month": 4, "day": 19},
+        {"month": 4, "day": 20},
+        {"month": 4, "day": 21},
+        {"month": 4, "day": 22, "unlock":"Yongen"},
+        {"month": 4, "day": 23},
+        {"month": 4, "day": 24},
+        {"month": 4, "day": 25},
+        {"month": 4, "day": 26},
+        {"month": 4, "day": 27},
+        {"month": 4, "day": 28},
+        {"month": 4, "day": 29, "dungeonDeadline": true},
+        {"month": 4, "day": 30},
+        {"month": 4, "day": 31}
+    ]
+}
