@@ -1,7 +1,7 @@
 <script setup lang="ts">
 import { ref, computed } from 'vue'
 import calendar from '../res/p5rcalendar.json'
-import { generateSchedule, type SchedulerConfig } from './scheduler'
+import { generateSchedule, type SchedulerConfig, type SchedulerResult } from './scheduler'
 import { jazzJinStatUps, jazzJinSkills, navigatorSkills } from './data/confidants'
 
 // User configuration
@@ -63,26 +63,37 @@ const availableArcanas = [
   'Faith',
 ]
 
-// Generate schedule
-const schedulerConfig = computed<SchedulerConfig>(() => ({
-  jazzJinSkills: selectedJazzJinSkills.value,
-  jazzJinStatUps: Object.fromEntries(
-    Object.entries(jazzJinStatUpVisits.value).filter(([, count]) => count > 0),
-  ),
-  navigatorSkills: navigatorSkillDates.value,
-  personaStock: personaStock.value,
-  startingMoney: startingMoney.value,
-  startingDate: startingDate.value,
-}))
+// Schedule result (only calculated when button is clicked)
+const scheduleResult = ref<SchedulerResult | null>(null)
+const isGenerating = ref(false)
+const generationError = ref<string | null>(null)
 
-const scheduleResult = computed(() => {
+// Generate schedule function (called on button click)
+function generateScheduleClick() {
+  isGenerating.value = true
+  generationError.value = null
+
   try {
-    return generateSchedule(calendar, schedulerConfig.value)
+    const config: SchedulerConfig = {
+      jazzJinSkills: selectedJazzJinSkills.value,
+      jazzJinStatUps: Object.fromEntries(
+        Object.entries(jazzJinStatUpVisits.value).filter(([, count]) => count > 0),
+      ),
+      navigatorSkills: navigatorSkillDates.value,
+      personaStock: personaStock.value,
+      startingMoney: startingMoney.value,
+      startingDate: startingDate.value,
+    }
+
+    scheduleResult.value = generateSchedule(calendar, config)
   } catch (error) {
     console.error('Schedule generation error:', error)
-    return null
+    generationError.value = error instanceof Error ? error.message : 'Unknown error occurred'
+    scheduleResult.value = null
+  } finally {
+    isGenerating.value = false
   }
-})
+}
 
 // Update Jazz Jin stat up visit count
 function updateJazzJinStatUpVisits(statUp: string, count: number) {
@@ -265,6 +276,13 @@ function formatMoney(amount: number): string {
           </label>
         </div>
       </div>
+
+      <div class="config-section">
+        <button @click="generateScheduleClick" :disabled="isGenerating" class="generate-button">
+          {{ isGenerating ? 'Generating Schedule...' : 'Generate Schedule' }}
+        </button>
+        <p v-if="generationError" class="error-message">{{ generationError }}</p>
+      </div>
     </div>
 
     <!-- Schedule Summary -->
@@ -335,13 +353,9 @@ function formatMoney(amount: number): string {
 
     <!-- Daily Schedule -->
     <div v-if="scheduleResult" class="schedule-panel">
-      <h2>Daily Schedule</h2>
+      <h2>Daily Schedule ({{ scheduleResult.schedule.length }} days)</h2>
       <div class="schedule-list">
-        <div
-          v-for="(day, index) in scheduleResult.schedule.slice(0, 30)"
-          :key="index"
-          class="schedule-day"
-        >
+        <div v-for="(day, index) in scheduleResult.schedule" :key="index" class="schedule-day">
           <div class="day-header">{{ day.month }}/{{ day.day }} ({{ day.dayOfWeek }})</div>
           <div class="day-activities">
             <div v-if="day.morning" class="activity morning">
@@ -619,5 +633,36 @@ h3 {
   margin-top: 5px;
   font-weight: bold;
   color: #4caf50;
+}
+
+.generate-button {
+  width: 100%;
+  padding: 15px;
+  font-size: 1.1em;
+  font-weight: bold;
+  background: #9c27b0;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.3s;
+}
+
+.generate-button:hover:not(:disabled) {
+  background: #7b1fa2;
+}
+
+.generate-button:disabled {
+  background: #ccc;
+  cursor: not-allowed;
+}
+
+.error-message {
+  margin-top: 10px;
+  padding: 10px;
+  background: #ffebee;
+  color: #c62828;
+  border-radius: 4px;
+  border: 1px solid #ef5350;
 }
 </style>
