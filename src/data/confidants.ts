@@ -430,7 +430,6 @@ export interface JazzJinSkill {
   date: string // Date when this skill becomes available (YYYY-MM-DD format)
   description: string // Description of what the skill does
   target: 'Party' | 'All' // Applies to all party members
-  isEventDay?: boolean // If true, this date is blocked by story events
 }
 
 export const jazzJinSkills: JazzJinSkill[] = [
@@ -449,24 +448,10 @@ export const jazzJinSkills: JazzJinSkill[] = [
     target: 'Party',
   },
   {
-    name: 'Event Day',
-    date: '2016-07-10',
-    description: 'Story event - Jazz Jin unavailable',
-    target: 'Party',
-    isEventDay: true,
-  },
-  {
     name: 'Marakukaja',
     date: '2016-07-17',
     description: "Increase party's Defense for 3 turns.",
     target: 'Party',
-  },
-  {
-    name: 'Event Day',
-    date: '2016-07-24',
-    description: 'Story event - Jazz Jin unavailable',
-    target: 'Party',
-    isEventDay: true,
   },
   {
     name: 'Masukukaja',
@@ -488,13 +473,6 @@ export const jazzJinSkills: JazzJinSkill[] = [
     target: 'Party',
   },
   {
-    name: 'Event Day',
-    date: '2016-08-21',
-    description: 'Story event - Jazz Jin unavailable',
-    target: 'Party',
-    isEventDay: true,
-  },
-  {
     name: 'Masukunda',
     date: '2016-08-28',
     description: "Decrease all foes' Agility for 3 turns.",
@@ -506,20 +484,6 @@ export const jazzJinSkills: JazzJinSkill[] = [
     date: '2016-09-04',
     description: "Multiply user's next Phys attack damage by 2.5.",
     target: 'Party',
-  },
-  {
-    name: 'Event Day',
-    date: '2016-09-11',
-    description: 'Story event - Jazz Jin unavailable',
-    target: 'Party',
-    isEventDay: true,
-  },
-  {
-    name: 'Event Day',
-    date: '2016-09-18',
-    description: 'Story event - Jazz Jin unavailable',
-    target: 'Party',
-    isEventDay: true,
   },
   {
     name: 'Concentrate',
@@ -572,13 +536,6 @@ export const jazzJinSkills: JazzJinSkill[] = [
     target: 'Party',
   },
   {
-    name: 'Event Day',
-    date: '2016-11-20',
-    description: 'Story event - Jazz Jin unavailable',
-    target: 'Party',
-    isEventDay: true,
-  },
-  {
     name: 'Masukunda',
     date: '2016-11-27',
     description: "Decrease all foes' Agility for 3 turns.",
@@ -597,35 +554,7 @@ export const jazzJinSkills: JazzJinSkill[] = [
     description: "Decrease 1 foe's Attack, Defense, and Agility for 3 turns.",
     target: 'Party',
   },
-  {
-    name: 'Event Day',
-    date: '2016-12-18',
-    description: 'Story event - Jazz Jin unavailable',
-    target: 'Party',
-    isEventDay: true,
-  },
-  {
-    name: 'Event Day',
-    date: '2016-12-25',
-    description: 'Story event - Jazz Jin unavailable',
-    target: 'Party',
-    isEventDay: true,
-  },
   // January
-  {
-    name: 'Event Day',
-    date: '2017-01-01',
-    description: 'Story event - Jazz Jin unavailable',
-    target: 'Party',
-    isEventDay: true,
-  },
-  {
-    name: 'Event Day',
-    date: '2017-01-08',
-    description: 'Story event - Jazz Jin unavailable',
-    target: 'Party',
-    isEventDay: true,
-  },
   {
     name: 'Ali Dance',
     date: '2017-01-15',

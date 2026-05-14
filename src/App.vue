@@ -6,30 +6,33 @@ import { jazzJinStatUps, jazzJinSkills, navigatorSkills } from './data/confidant
 
 // User configuration
 const jazzJinStatUpVisits = ref<Record<string, number>>({}) // Stat up name -> number of visits
-const selectedJazzJinSkills = ref<string[]>([])
+const selectedJazzJinSkillDates = ref<string[]>([])
 const navigatorSkillDates = ref<Record<number, string>>({}) // visit number -> date
 const personaStock = ref<string[]>([])
-const startingMoney = ref(50000)
+const startingMoney = ref(0)
 const startingDate = ref('2016-04-09')
 
 // Available Jazz Jin stat ups
-const availableJazzStatUps = jazzJinStatUps.map((statUp) => statUp.name)
+//const availableJazzStatUps = jazzJinStatUps.map((statUp) => statUp.name)
 // Available Jazz Jin skills (filter out event days)
-const availableJazzSkills = jazzJinSkills.filter((skill) => !skill.isEventDay)
+//const availableJazzSkills = jazzJinSkills
 
 // Get dates used by navigator skills
+/*
 const datesUsedByNavigator = computed(() => {
   return Object.values(navigatorSkillDates.value)
 })
+*/
 
 // Get available dates for navigator skills (dates not used by selected Jazz Jin skills)
+/*
 const availableNavigatorDates = computed(() => {
   return jazzJinSkills
     .filter((skill) => {
       // Exclude event days
       if (skill.isEventDay) return false
       // Exclude if the skill is selected
-      if (selectedJazzJinSkills.value.includes(skill.name)) return false
+      if (selectedJazzJinSkillDates.value.includes(skill.name)) return false
       // Exclude if already used by another navigator skill
       if (datesUsedByNavigator.value.includes(skill.date)) return false
       return true
@@ -39,6 +42,7 @@ const availableNavigatorDates = computed(() => {
       label: `${skill.date} - ${skill.name}`,
     }))
 })
+*/
 
 // Available Arcanas for persona stock
 const availableArcanas = [
@@ -75,7 +79,7 @@ function generateScheduleClick() {
 
   try {
     const config: SchedulerConfig = {
-      jazzJinSkills: selectedJazzJinSkills.value,
+      jazzJinSkills: selectedJazzJinSkillDates.value,
       jazzJinStatUps: Object.fromEntries(
         Object.entries(jazzJinStatUpVisits.value).filter(([, count]) => count > 0),
       ),
@@ -96,6 +100,7 @@ function generateScheduleClick() {
 }
 
 // Update Jazz Jin stat up visit count
+/*
 function updateJazzJinStatUpVisits(statUp: string, count: number) {
   if (count > 0) {
     jazzJinStatUpVisits.value[statUp] = count
@@ -103,12 +108,14 @@ function updateJazzJinStatUpVisits(statUp: string, count: number) {
     delete jazzJinStatUpVisits.value[statUp]
   }
 }
+*/
+
 
 // Toggle Jazz Jin skill selection
-function toggleJazzJinSkill(skillName: string) {
-  const index = selectedJazzJinSkills.value.indexOf(skillName)
+function toggleJazzJinSkill(skillName: string, skillDate: string) {
+  const index = selectedJazzJinSkillDates.value.indexOf(skillDate)
   if (index > -1) {
-    selectedJazzJinSkills.value.splice(index, 1)
+    selectedJazzJinSkillDates.value.splice(index, 1)
   } else {
     // Find the skill to get its date
     const skill = jazzJinSkills.find((s) => s.name === skillName)
@@ -121,12 +128,13 @@ function toggleJazzJinSkill(skillName: string) {
         // Remove from navigator skills
         delete navigatorSkillDates.value[Number(dateUsedByNavigator[0])]
       }
-      selectedJazzJinSkills.value.push(skillName)
+      selectedJazzJinSkillDates.value.push(skillName)
     }
   }
 }
 
 // Update navigator skill date
+/*
 function updateNavigatorSkillDate(visit: number, date: string) {
   if (date) {
     navigatorSkillDates.value[visit] = date
@@ -134,19 +142,10 @@ function updateNavigatorSkillDate(visit: number, date: string) {
     delete navigatorSkillDates.value[visit]
   }
 }
-
-// Check if a Jazz Jin skill date is available (not used by navigator or selected skill)
-function isJazzJinSkillDateAvailable(skillName: string): boolean {
-  const skill = jazzJinSkills.find((s) => s.name === skillName)
-  if (!skill) return false
-  // If already selected, it's available
-  if (selectedJazzJinSkills.value.includes(skillName)) return true
-  // If date is used by navigator, it's not available
-  if (datesUsedByNavigator.value.includes(skill.date)) return false
-  return true
-}
+*/
 
 // Toggle persona in stock
+/*
 function togglePersonaStock(arcana: string) {
   const index = personaStock.value.indexOf(arcana)
   if (index > -1) {
@@ -155,6 +154,7 @@ function togglePersonaStock(arcana: string) {
     personaStock.value.push(arcana)
   }
 }
+*/
 
 // Format money
 function formatMoney(amount: number): string {
@@ -177,6 +177,7 @@ function formatMoney(amount: number): string {
         </label>
       </div>
 
+      <!--
       <div class="config-section">
         <h3>Jazz Jin Stat Ups (blocks evening slot)</h3>
         <p class="section-note">
@@ -200,22 +201,21 @@ function formatMoney(amount: number): string {
           </label>
         </div>
       </div>
+      -->
 
       <div class="config-section">
         <h3>Jazz Jin Skills (blocks evening slot)</h3>
         <div class="skill-list">
           <label
-            v-for="skill in availableJazzSkills"
+            v-for="skill in jazzJinSkills"
             :key="skill.name"
             class="skill-checkbox"
-            :class="{ disabled: !isJazzJinSkillDateAvailable(skill.name) }"
           >
             <input
               type="checkbox"
               :value="skill.name"
-              :checked="selectedJazzJinSkills.includes(skill.name)"
-              :disabled="!isJazzJinSkillDateAvailable(skill.name)"
-              @change="toggleJazzJinSkill(skill.name)"
+              :checked="selectedJazzJinSkillDates.includes(skill.date)"
+              @change="toggleJazzJinSkill(skill.name, skill.date)"
             />
             <span class="skill-info">
               <strong>{{ skill.name }}</strong>
@@ -226,6 +226,7 @@ function formatMoney(amount: number): string {
         </div>
       </div>
 
+      <!--
       <div class="config-section">
         <h3>Navigator Skills (Futaba - blocks evening slot)</h3>
         <p class="section-note">
@@ -261,7 +262,9 @@ function formatMoney(amount: number): string {
           </div>
         </div>
       </div>
+      -->
 
+      <!--
       <div class="config-section">
         <h3>Personas in Stock (prioritized by scheduler)</h3>
         <div class="persona-list">
@@ -276,6 +279,7 @@ function formatMoney(amount: number): string {
           </label>
         </div>
       </div>
+      -->
 
       <div class="config-section">
         <button @click="generateScheduleClick" :disabled="isGenerating" class="generate-button">
