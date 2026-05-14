@@ -2,7 +2,7 @@
 import { ref, computed } from 'vue'
 import calendar from '../res/p5rcalendar.json'
 import { generateSchedule, type SchedulerConfig, type SchedulerResult } from './scheduler'
-import { jazzJinStatUps, jazzJinSkills, navigatorSkills } from './data/confidants'
+import { jazzJinSkills } from './data/confidants'
 
 // User configuration
 const jazzJinStatUpVisits = ref<Record<string, number>>({}) // Stat up name -> number of visits
